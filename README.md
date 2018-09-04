@@ -24,8 +24,23 @@ Put it in your homedir: ```~/chromedriver```
 ```bash
 go run exporter.go --list-url https://www.listchallenges.com/the-european-capitals-of-culture
 
-# Get all the items
+# Use --debug for some output in between
+go run exporter.go --debug --list-url https://www.listchallenges.com/the-european-capitals-of-culture
+
+# Just get all the items using jq
 go run exporter.go --list-url https://www.listchallenges.com/reddit-top-250-movies | jq -r ".items[].name"
+
+```
+
+The tool can also fetch completion of lists by logging in:
+
+```bash
+# Set username and password
+export LC_USERNAME=""; export LC_PASSWORD="";
+go run exporter.go --debug --username "$LC_USERNAME" --password "$LC_PASSWORD"
+
+# Print both name and whether the item is checked or not
+go run exporter.go --debug --list-url https://www.listchallenges.com/reddit-top-250-movies --username "$LC_USERNAME" --password "$LC_PASSWORD" | jq -r '.items[] | "\(.name), \(.checked)"'
 ```
 
 ## Developing
@@ -52,3 +67,4 @@ go build -o bin/exporter exporter.go
 - Use of proper logger and ```--debug``` mode to be able to supress verbose output by default
 - Code clean up
 - Support for scraping list completion by logging into account
+- Parallel fetching of pages
